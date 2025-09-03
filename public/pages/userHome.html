@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UConnect - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<style>:root {
+  --primary-red: #D61A2C;
+  --bg-color: #F8F9FA;
+  --card-bg: #FFFFFF;
+  --subtle: #6B7280;
+  --primary-white: #FFFFFF;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-color);
+  display: grid;
+  grid-template-columns: 240px 1fr 320px;
+}
+
+.sidebar-left {
+  background: var(--card-bg);
+  color: var(--subtle);
+  height: 100vh;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  box-shadow: 10px 0 20px -10px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 10;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-left a {
+  color: var(--subtle);
+  font-weight: 600;
+  font-size: 1.15rem;
+  text-decoration: none;
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-left a:hover {
+  background: rgba(214, 26, 44, 0.05);
+  color: var(--primary-red);
+}
+
+.sidebar-left a.active {
+  color: var(--primary-red);
+  background: rgba(214, 26, 44, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+main {
+  padding: 2rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: var(--bg-color);
+  scroll-behavior: smooth;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15);
+  padding: 2.25rem 2rem 1.5rem;
+  margin-bottom: 2.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -15px rgba(0, 0, 0, 0.2);
+}
+
+.post-composer-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.profile-pic {
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 3px solid var(--primary-red);
+  box-shadow: 0 0 0 4px rgba(214, 26, 44, 0.2);
+}
+
+textarea#post-text {
+  width: 100%;
+  border: none;
+  resize: none;
+  min-height: 80px;
+  font-size: 1.15rem;
+  background: transparent;
+  outline: none;
+  color: #333;
+}
+
+.rounded-btn {
+  background: #E5E7EB;
+  color: #484848;
+  border: none;
+  border-radius: 24px;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  margin-right: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.rounded-btn:hover {
+  background: #D1D5DB;
+  color: #1F2937;
+}
+
+#media-preview img,
+#media-preview video {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 15px;
+  display: block;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#post-btn {
+  float: right;
+  margin-top: 14px;
+  padding: 0.8rem 2.2rem;
+  background: var(--primary-red);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#post-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(214, 26, 44, 0.4);
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 2rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid #E5E7EB;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  color: #4B5563;
+}
+
+.filter-btn:hover {
+  background: #F3F4F6;
+  border-color: #D1D5DB;
+  color: #1F2937;
+}
+
+.filter-btn.active {
+  background: var(--primary-red);
+  color: white;
+  border-color: var(--primary-red);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(214, 26, 44, 0.3);
+}
+
+.sidebar-right {
+  padding: 2rem 1.5rem;
+  background: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidebar-right::-webkit-scrollbar {
+  display: none;
+}
+
+.profile-info {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.profile-info img {
+  width: 96px;
+  height: 96px;
+  border-radius: 9999px;
+  object-fit: cover;
+  margin: 0 auto 1rem auto;
+  border: 4px solid var(--primary-red);
+}
+
+.small-muted {
+  color: #9CA3AF;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+#profileName, #profileUsername {
+  text-align: center;
+  display: block;
+}
+
+.communities-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.12);
+}
+
+.community-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #E5E7EB;
+  font-size: 1rem;
+}
+
+.community-item:last-child {
+  border-bottom: none;
+}
+
+.post-author-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid var(--primary-red);
+}
+
+.post-card-media {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin-top: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.post-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #6B7280;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.post-controls button:hover {
+  color: var(--primary-red);
+  transform: scale(1.1);
+}
+
+.top-right-admin-delete {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #9CA3AF;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.top-right-admin-delete:hover {
+  color: var(--primary-red);
+  transform: scale(1.2);
+}
+
+.delete-post-btn, .delete-comment-btn, .delete-comment-admin {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9CA3AF;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.delete-post-btn:hover, .delete-comment-btn:hover, .delete-comment-admin:hover {
+  color: var(--primary-red);
+  transform: scale(1.2);
+}
+
+.comments {
+  background: #F9FAFB;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px solid #E5E7EB;
+}
+
+.comments .small-muted {
+  font-size: 0.8rem;
+}
+
+/* New CSS to address user requests */
+#logout-link {
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--card-bg);
+  padding: 1rem 0;
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-top: 1px solid #E5E7EB;
+  box-shadow: 0 -4px 10px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Custom Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+.modal-backdrop.hidden {
+  display: none;
+}
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+.modal-backdrop:not(.hidden) .modal-content {
+  transform: scale(1);
+}
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+.modal-buttons button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 1px solid #D1D5DB;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.modal-buttons #modal-cancel:hover {
+  background: #F3F4F6;
+}
+.modal-buttons #modal-confirm {
+  background: var(--primary-red);
+  color: white;
+  border-color: var(--primary-red);
+}
+.modal-buttons #modal-confirm:hover {
+  background: #B61523;
+}
+.message-box {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-weight: 600;
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(-20px);
+}
+.message-box.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.message-box.error {
+  color: var(--primary-red);
+}
+.message-box.success {
+  color: #10B981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+  body {
+    grid-template-columns: 240px 1fr;
+  }
+  .sidebar-right {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    grid-template-columns: 1fr;
+  }
+  .sidebar-left {
+    display: none;
+  }
+  main {
+    padding: 1rem;
+  }
+}</style>
+</head>
+<body>
+  <!-- Left Sidebar -->
+  <nav class="sidebar-left" aria-label="Primary navigation">
+    <div class="logo" aria-label="UConnect logo" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <img src="/images/logo.png" alt="UConnect" style="width:180px;border-radius:10px;object-fit:cover;"/>
+      <!-- <span style="font-weight:700;font-size:1.25rem;color:var(--subtle)">UConnect</span> -->
+    </div>
+    <a href="/pages/userHome.html" class="active"><i class="fas fa-home" style="min-width:20px"></i> Home</a>
+    <a href="/pages/edit-profile.html"><i class="fas fa-user" style="min-width:20px"></i> Profile</a>
+    <a id="logout-link" href="#"><i class="fas fa-sign-out-alt" style="min-width:20px"></i> Logout</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main role="main" aria-label="Main content">
+    <div class="card" aria-label="Post composer">
+      <div style="display:flex; align-items:flex-start;">
+        <img id="me-avatar" class="profile-pic" src="https://placehold.co/56x56/D61A2C/FFFFFF?text=U" alt="User avatar" />
+        <div style="flex:1;">
+          <textarea id="post-text" placeholder="What's on your mind? Share with your community..."></textarea>
+          <div style="margin-top:12px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+              <label for="media-input" class="rounded-btn" style="cursor:pointer;"><i class="fas fa-image"></i> Photo/Video</label>
+              <input id="media-input" name="media" type="file" accept="image/*,video/*" style="display:none" />
+            </div>
+            <select id="post-category" aria-label="Select category" style="background:#f8f9fa;border-radius:8px;border:1px solid #e5e7eb;padding:.3rem 6px;">
+              <option value="academics">Academics</option>
+              <option value="campus event">Campus Event</option>
+              <option value="sports">Sports</option>
+              <option value="clubs">Clubs</option>
+            </select>
+            <button id="post-btn" aria-label="Post button">Post</button>
+          </div>
+          <div id="media-preview" style="margin-top:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters" role="tablist" aria-label="Post Categories">
+      <button class="filter-btn active" data-cat="foru" role="tab" aria-selected="true">For You</button>
+      <button class="filter-btn" data-cat="academics" role="tab">Academics</button>
+      <button class="filter-btn" data-cat="campus event" role="tab">Campus Event</button>
+      <button class="filter-btn" data-cat="sports" role="tab">Sports</button>
+      <button class="filter-btn" data-cat="clubs" role="tab">Clubs</button>
+    </div>
+
+    <section id="feed" aria-live="polite" aria-atomic="true" tabindex="0"></section>
+  </main>
+
+  <!-- Right Sidebar -->
+  <aside class="sidebar-right" aria-label="User info and communities">
+    <div class="profile-info" role="region" aria-labelledby="profile-title" tabindex="0">
+      <img id="profileAvatar" src="https://placehold.co/84x84/D61A2C/FFFFFF?text=U" alt="User avatar" />
+      <strong id="profileName">Loading...</strong>
+      <em id="profileUsername" class="small-muted">@username</em>
+      <a id="view-profile-btn" href="/pages/edit-profile.html" class="rounded-btn" style="margin-top:1rem;display:inline-block;width:100%;text-align:center;text-decoration:none;color:var(--primary-red);font-weight:600;border-radius:999px;padding:.5rem 0;">View Profile</a>
+    </div>
+  </aside>
+
+  <!-- Custom Confirmation Modal -->
+  <div id="confirm-modal" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <p id="modal-message"></p>
+      <div class="modal-buttons mt-4">
+        <button id="modal-cancel">Cancel</button>
+        <button id="modal-confirm" class="bg-red-600 text-white">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Message Box -->
+  <div id="message-box" class="message-box"></div>
+
+  <script>
+    // Helper: escape
+    function escapeHtml(text) {
+      return (text || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    
+    // Custom Modal and Message Box functions
+    function showMessageBox(message, isError = false) {
+      const box = document.getElementById('message-box');
+      box.textContent = message;
+      box.className = isError ? 'message-box error' : 'message-box success';
+      box.classList.add('show');
+      setTimeout(() => {
+        box.classList.remove('show');
+      }, 3000);
+    }
+    
+    function showConfirmModal(message) {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('confirm-modal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalConfirm = document.getElementById('modal-confirm');
+        const modalCancel = document.getElementById('modal-cancel');
+        
+        modalMessage.textContent = message;
+        modal.classList.remove('hidden');
+
+        const onConfirm = () => {
+          modal.classList.add('hidden');
+          modalConfirm.removeEventListener('click', onConfirm);
+          modalCancel.removeEventListener('click', onCancel);
+          resolve(true);
+        };
+        const onCancel = () => {
+          modal.classList.add('hidden');
+          modalConfirm.removeEventListener('click', onConfirm);
+          modalCancel.removeEventListener('click', onCancel);
+          resolve(false);
+        };
+
+        modalConfirm.addEventListener('click', onConfirm);
+        modalCancel.addEventListener('click', onCancel);
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            onCancel();
+          }
+        });
+      });
+    }
+
+
+    // State
+    let me = null;
+    let selectedFile = null;
+    let currentCategory = 'foru';
+
+    // Elements
+    const profileAvatar = document.getElementById('profileAvatar');
+    const meAvatar = document.getElementById('me-avatar');
+    const profileNameEl = document.getElementById('profileName');
+    const profileUsernameEl = document.getElementById('profileUsername');
+    const mediaInput = document.getElementById('media-input');
+    const mediaPreview = document.getElementById('media-preview');
+    const postText = document.getElementById('post-text');
+    const postBtn = document.getElementById('post-btn');
+    const feed = document.getElementById('feed');
+    const categorySelect = document.getElementById('post-category');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    // Fetch current user
+    async function loadUserProfile() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (!res.ok) {
+          window.location = '/pages/signin.html';
+          return;
+        }
+        const j = await res.json();
+        if (!j.ok) { window.location = '/pages/signin.html'; return; }
+        me = j.user;
+        profileNameEl.textContent = me.name;
+        profileUsernameEl.textContent = me.username ? '@' + me.username : '';
+        profileAvatar.src = me.avatar || '/images/default-avatar.png';
+        meAvatar.src = me.avatar || '/images/default-avatar.png';
+        // show admin link
+        if (me.role === 'admin') {
+          // optionally show admin dashboard link in sidebar
+          const el = document.createElement('a');
+          el.href = '/pages/adminDashboard.html';
+          el.className = 'rounded-btn';
+          el.textContent = 'Admin Dashboard';
+          el.style.marginTop = '12px';
+          el.style.display = 'block';
+          el.style.textAlign = 'center';
+          el.style.color = 'var(--primary-red)';
+          document.querySelector('.sidebar-left').appendChild(el);
+        }
+      } catch (err) {
+        console.error(err);
+        window.location = '/pages/signin.html';
+      }
+    }
+
+    // Media preview
+    mediaInput.addEventListener('change', () => {
+      selectedFile = mediaInput.files[0] || null;
+      mediaPreview.innerHTML = '';
+      if (!selectedFile) return;
+      const url = URL.createObjectURL(selectedFile);
+      const isImage = selectedFile.type.startsWith('image/');
+      const el = document.createElement(isImage ? 'img' : 'video');
+      el.src = url;
+      el.className = 'post-media w-full max-w-md rounded-lg shadow-sm mt-4';
+      if (!isImage) el.controls = true;
+      mediaPreview.appendChild(el);
+    });
+
+    // Post creation
+    postBtn.addEventListener('click', async () => {
+      const content = postText.value.trim();
+      const category = categorySelect.value;
+      if (!content && !selectedFile) {
+        showMessageBox('Please enter text or attach media.', true);
+        return;
+      }
+      const fd = new FormData();
+      fd.append('content', content);
+      fd.append('category', category);
+      if (selectedFile) fd.append('media', selectedFile);
+
+      const res = await fetch('/api/posts', { method:'POST', body: fd });
+      const j = await res.json();
+      if (j.ok) {
+        postText.value = '';
+        mediaInput.value = '';
+        mediaPreview.innerHTML = '';
+        selectedFile = null;
+        loadPosts(currentCategory);
+      } else {
+        showMessageBox(j.message || 'Failed to create post', true);
+      }
+    });
+
+    // Filters
+    function setActiveFilter(cat) {
+      currentCategory = cat;
+      filterButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.cat === cat);
+        btn.setAttribute('aria-selected', btn.dataset.cat === cat);
+      });
+      loadPosts(cat);
+    }
+    filterButtons.forEach(btn => btn.addEventListener('click', () => setActiveFilter(btn.dataset.cat)));
+
+    // Load posts
+    async function loadPosts(category) {
+      feed.innerHTML = '';
+      const res = await fetch('/api/posts?category=' + encodeURIComponent(category || 'foru'));
+      if (!res.ok) {
+        feed.innerHTML = '<p class="text-center text-gray-500 mt-10">Failed to load posts.</p>';
+        return;
+      }
+      const j = await res.json();
+      if (!j.ok) { feed.innerHTML = '<p class="text-center text-gray-500 mt-10">Failed to load posts.</p>'; return; }
+      renderPosts(j.posts || []);
+    }
+
+    // Render posts
+    function renderPosts(posts) {
+      if (!posts.length) {
+        feed.innerHTML = '<p class="text-center text-gray-500 mt-10">No posts found. Be the first to post!</p>';
+        return;
+      }
+      feed.innerHTML = '';
+      posts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.position = 'relative';
+
+        // admin delete top-right
+        let adminDeleteBtn = '';
+        if (me && me.role === 'admin') {
+          adminDeleteBtn = `<button class="top-right-admin-delete" data-id="${p._id}" title="Delete post (admin)"><i class="fas fa-trash" style="color:#9CA3AF"></i></button>`;
+        }
+
+        card.innerHTML = `
+          ${adminDeleteBtn}
+          <div style="display:flex; gap:12px;">
+            <img src="${p.userId?.avatar || 'https://placehold.co/56x56/D61A2C/FFFFFF?text=U'}" alt="Author Avatar" class="post-author-avatar" />
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <strong>${escapeHtml(p.userId?.name || 'Unknown')}</strong>
+                  <div class="small-muted" style="font-size:0.9rem">${new Date(p.createdAt).toLocaleString()} • ${escapeHtml(p.category)}</div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                  ${ (me && p.userId && p.userId._id && me._id === p.userId._id) ? `<button class="delete-post-btn" data-id="${p._id}" style="background:none;border:none;cursor:pointer;color:#9CA3AF" title="Delete post"><i class="fas fa-trash"></i></button>` : '' }
+                </div>
+              </div>
+              <p style="margin-top:8px;">${escapeHtml(p.content || '')}</p>
+              ${p.media?.url ? (p.media.type === 'video' ? `<video src="${p.media.url}" class="post-card-media" controls></video>` : `<img src="${p.media.url}" class="post-card-media" alt="media">`) : ''}
+              <div style="margin-top:12px; display:flex; gap:18px; align-items:center;" class="post-controls">
+                <button class="like-btn" data-id="${p._id}">❤️ <span class="like-count">${p.likes?.length || 0}</span></button>
+                <button class="comment-toggle" data-id="${p._id}">💬 <span class="comment-count">${p.comments?.length || 0}</span></button>
+              </div>
+              <div class="comments" id="comments-${p._id}" style="display:none;"></div>
+            </div>
+          </div>
+        `;
+        feed.appendChild(card);
+      });
+
+      // Attach handlers
+      document.querySelectorAll('.like-btn').forEach(b => b.addEventListener('click', async () => {
+        const id = b.dataset.id;
+        const res = await fetch(`/api/posts/${id}/like`, { method:'POST' });
+        const j = await res.json();
+        if (j.ok) b.querySelector('.like-count').textContent = j.likes;
+      }));
+
+      document.querySelectorAll('.comment-toggle').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          const container = document.getElementById(`comments-${id}`);
+          if (!container.style.display || container.style.display === 'none') {
+            const res = await fetch(`/api/posts/${id}/comments`);
+            const j = await res.json();
+            if (!j.ok) { showMessageBox('Failed to load comments', true); return; }
+            container.innerHTML = '';
+            j.comments.forEach(c => {
+              const who = c.userId?.name || c.userId?.username || 'User';
+              const d = document.createElement('div');
+              d.style.padding = '8px 0';
+              d.innerHTML = `
+                <div style="display:flex; justify-content:space-between;">
+                  <div>
+                    <strong>${escapeHtml(who)}</strong>
+                    <span class="small-muted" style="margin-left:8px;font-size:.85rem">${new Date(c.createdAt).toLocaleString()}</span>
+                    <div style="margin-top:6px">${escapeHtml(c.body)}</div>
+                  </div>
+                  <div>
+                    ${ (me && c.userId && c.userId._id && me._id === c.userId._id) ? `<button class="delete-comment-btn" data-post="${id}" data-comment="${c._id}" style="background:none;border:none;cursor:pointer;color:#9CA3AF" title="Delete comment"><i class="fas fa-trash"></i></button>` : '' }
+                    ${ (me && me.role === 'admin') ? `<button class="delete-comment-admin" data-post="${id}" data-comment="${c._id}" style="background:none;border:none;cursor:pointer;color:#9CA3AF" title="Delete comment (admin)"><i class="fas fa-trash"></i></button>` : '' }
+                  </div>
+                </div>
+              `;
+              container.appendChild(d);
+            });
+            // comment form
+            const commentForm = document.createElement('div');
+            commentForm.style.marginTop = '8px';
+            commentForm.innerHTML = `
+              <input id="comment-input-${id}" placeholder="Write a comment..." style="width:100%;padding:0.5rem;border:1px solid #eee;border-radius:8px;" />
+              <button id="comment-btn-${id}" style="margin-top:6px;padding:0.4rem 0.6rem;border-radius:8px;background:var(--primary-red);color:#fff;border:none;cursor:pointer;">Comment</button>
+            `;
+            container.appendChild(commentForm);
+
+            document.getElementById(`comment-btn-${id}`).addEventListener('click', async () => {
+              const body = document.getElementById(`comment-input-${id}`).value.trim();
+              if (!body) return;
+              const res2 = await fetch(`/api/posts/${id}/comments`, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ body }) });
+              const j2 = await res2.json();
+              if (j2.ok) {
+                btn.querySelector('.comment-count').textContent = j2.comments;
+                container.style.display = 'none';
+                btn.click();
+              } else showMessageBox(j2.message || 'Error posting comment', true);
+            });
+
+            // delete comment handlers
+            container.querySelectorAll('.delete-comment-btn, .delete-comment-admin').forEach(b => {
+              b.addEventListener('click', async () => {
+                const postId = b.dataset.post;
+                const commentId = b.dataset.comment;
+                const result = await showConfirmModal('Delete this comment?');
+                if (!result) return;
+                const res3 = await fetch(`/api/posts/${postId}/comments/${commentId}`, { method:'DELETE' });
+                const j3 = await res3.json();
+                if (j3.ok) {
+                  loadPosts(currentCategory);
+                } else showMessageBox(j3.message || 'Delete failed', true);
+              });
+            });
+
+            container.style.display = 'block';
+          } else {
+            container.style.display = 'none';
+          }
+        });
+      });
+
+      // delete post (owner)
+      document.querySelectorAll('.delete-post-btn').forEach(b => {
+        b.addEventListener('click', async () => {
+          const id = b.dataset.id;
+          const result = await showConfirmModal('Delete this post?');
+          if (!result) return;
+          const res = await fetch(`/api/posts/${id}`, { method:'DELETE' });
+          const j = await res.json();
+          if (j.ok) loadPosts(currentCategory);
+          else showMessageBox(j.message || 'Delete failed', true);
+        });
+      });
+
+      // admin delete top-right
+      document.querySelectorAll('.top-right-admin-delete').forEach(b => {
+        b.addEventListener('click', async () => {
+          const id = b.dataset.id;
+          const result = await showConfirmModal('Admin: delete this post?');
+          if (!result) return;
+          const res = await fetch(`/api/admin/posts/${id}`, { method:'DELETE' });
+          const j = await res.json();
+          if (j.ok) loadPosts(currentCategory);
+          else showMessageBox(j.message || 'Delete failed', true);
+        });
+      });
+    }
+
+    // Logout
+    document.getElementById('logout-link').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await fetch('/api/auth/logout', { method:'POST' });
+      window.location = '/pages/signin.html';
+    });
+
+    // Initial
+    (async () => {
+      await loadUserProfile();
+      setActiveFilter('foru');
+    })();
+  </script>
+</body>
+</html>

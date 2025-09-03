@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>UConnect - Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    :root {
+      --primary-red: #D61A2C;
+      --dark-red: #B61523;
+      --bg-color: #F8F9FA;
+      --card-bg: #FFFFFF;
+      --text-color: #1F2937;
+      --subtle-text: #6B7280;
+      --border-color: #E5E7EB;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-color);
+      padding: 2rem;
+      color: var(--text-color);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 30% 70%;
+      gap: 2rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15);
+      margin-bottom: 2rem;
+    }
+    .btn {
+      padding: .6rem 1.2rem;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-danger {
+      background: var(--primary-red);
+      color: white;
+    }
+    .btn-danger:hover {
+      background: var(--dark-red);
+    }
+    .btn-muted {
+      background: var(--border-color);
+      color: var(--subtle-text);
+    }
+    .btn-muted:hover {
+      background: #D1D5DB;
+    }
+    .user-item, .post-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .8rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .user-item:last-child, .post-item:last-child {
+      border-bottom: none;
+    }
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 9999px;
+      object-fit: cover;
+      border: 2px solid var(--primary-red);
+    }
+    .post-card-media {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-top: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .no-content-message {
+      text-align: center;
+      color: var(--subtle-text);
+      font-style: italic;
+      margin-top: 2rem;
+    }
+    .text-sm {
+      font-size: 0.875rem;
+    }
+    .text-xs {
+      font-size: 0.75rem;
+    }
+    .input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--bg-color);
+    }
+    .input:focus {
+      outline: none;
+      border-color: var(--primary-red);
+      box-shadow: 0 0 0 2px rgba(214, 26, 44, 0.2);
+    }
+
+    /* New filter buttons styles */
+    .filter-btn-group {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: #F3F4F6;
+      border-radius: 9999px;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      color: var(--subtle-text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .filter-btn.active {
+      background: white;
+      color: var(--primary-red);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Custom Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      transition: all 0.3s ease;
+    }
+    .modal-backdrop.hidden {
+      display: none;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    .modal-backdrop:not(.hidden) .modal-content {
+      transform: scale(1);
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    .modal-buttons button {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #D1D5DB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .modal-buttons #modal-cancel:hover {
+      background: #F3F4F6;
+    }
+    .modal-buttons #modal-confirm {
+      background: var(--primary-red);
+      color: white;
+      border-color: var(--primary-red);
+    }
+    .modal-buttons #modal-confirm:hover {
+      background: var(--dark-red);
+    }
+    .message-box {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-weight: 600;
+      z-index: 60;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(-20px);
+    }
+    .message-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .message-box.error {
+      color: var(--primary-red);
+    }
+    .message-box.success {
+      color: #10B981;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="grid-column: 1 / span 2;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+        <h1 class="text-3xl font-bold" style="color:var(--text-color);">Admin Dashboard</h1>
+        <button id="logout" class="btn btn-muted">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Users Section -->
+    <div>
+      <div class="card">
+        <h3 class="font-semibold text-xl mb-3">Manage Users</h3>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <input id="search-users" class="input" placeholder="Search by name, username, email">
+          <button id="search-users-btn" class="btn btn-muted">
+            <i class="fas fa-search"></i>
+          </button>
+          <button id="refresh-users" class="btn btn-muted">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div id="users-list" style="margin-top:1rem;"></div>
+      </div>
+    </div>
+
+    <!-- Posts Section -->
+    <div>
+      <div class="card">
+        <h3 class="font-semibold text-xl mb-3">Recent Posts</h3>
+        <div class="filter-btn-group mb-4">
+          <button class="filter-btn active" data-category="">For You</button>
+          <button class="filter-btn" data-category="academics">Academics</button>
+          <button class="filter-btn" data-category="campus-event">Campus Event</button>
+          <button class="filter-btn" data-category="sports">Sports</button>
+          <button class="filter-btn" data-category="clubs">Clubs</button>
+        </div>
+        <div id="posts-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Confirmation Modal -->
+  <div id="confirm-modal" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <p id="modal-message"></p>
+      <div class="modal-buttons mt-4">
+        <button id="modal-cancel">Cancel</button>
+        <button id="modal-confirm" class="bg-red-600 text-white">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Message Box -->
+  <div id="message-box" class="message-box"></div>
+
+<script>
+  // Helper: escape
+  function escapeHtml(text) {
+    return (text || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // Custom Modal and Message Box functions
+  function showMessageBox(message, isError = false) {
+    const box = document.getElementById('message-box');
+    box.textContent = message;
+    box.className = isError ? 'message-box error' : 'message-box success';
+    box.classList.add('show');
+    setTimeout(() => {
+      box.classList.remove('show');
+    }, 3000);
+  }
+
+  function showConfirmModal(message) {
+    return new Promise((resolve) => {
+      const modal = document.getElementById('confirm-modal');
+      const modalMessage = document.getElementById('modal-message');
+      const modalConfirm = document.getElementById('modal-confirm');
+      const modalCancel = document.getElementById('modal-cancel');
+      
+      modalMessage.textContent = message;
+      modal.classList.remove('hidden');
+
+      const onConfirm = () => {
+        modal.classList.add('hidden');
+        modalConfirm.removeEventListener('click', onConfirm);
+        modalCancel.removeEventListener('click', onCancel);
+        resolve(true);
+      };
+      const onCancel = () => {
+        modal.classList.add('hidden');
+        modalConfirm.removeEventListener('click', onConfirm);
+        modalCancel.removeEventListener('click', onCancel);
+        resolve(false);
+      };
+
+      modalConfirm.addEventListener('click', onConfirm);
+      modalCancel.addEventListener('click', onCancel);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          onCancel();
+        }
+      });
+    });
+  }
+
+  let me = null;
+
+  async function fetchMe() {
+    try {
+      const res = await fetch('/api/auth/me');
+      if (!res.ok) { window.location = '/pages/signin.html'; return; }
+      const j = await res.json();
+      if (!j.ok) { window.location = '/pages/signin.html'; return; }
+      me = j.user;
+    } catch (e) {
+      window.location = '/pages/signin.html';
+    }
+  }
+
+  async function fetchUsers(q='') {
+    const res = await fetch('/api/admin/users?q=' + encodeURIComponent(q));
+    const j = await res.json();
+    if (!j.ok) return [];
+    return j.users;
+  }
+
+  function renderUsers(list) {
+    const container = document.getElementById('users-list');
+    if (!list.length) { container.innerHTML = '<p class="no-content-message">No users found</p>'; return; }
+    container.innerHTML = list.map(u => `
+      <div class="user-item">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <img src="${u.avatar || 'https://placehold.co/48x48/D61A2C/fff?text=U'}" class="user-avatar" alt="${escapeHtml(u.name)}'s avatar"/>
+          <div>
+            <div style="font-weight:700">${escapeHtml(u.name)}</div>
+            <div class="text-sm text-gray-500" style="color:var(--subtle-text)">@${escapeHtml(u.username)} • ${escapeHtml(u.email)}</div>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-danger delete-user" data-id="${u._id}" ${u.role === 'admin' ? 'disabled title="Cannot delete another admin"' : ''}>
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.delete-user').forEach(b => {
+      b.addEventListener('click', async () => {
+        const id = b.dataset.id;
+        const result = await showConfirmModal('Delete this user and all their content?');
+        if (!result) return;
+        const res = await fetch('/api/admin/users/' + id, { method:'DELETE' });
+        const j = await res.json();
+        if (j.ok) { loadUsers(); loadPosts(); showMessageBox('User deleted', false); }
+        else showMessageBox(j.message || 'Failed to delete user', true);
+      });
+    });
+  }
+
+  async function loadUsers(q='') {
+    const users = await fetchUsers(q);
+    renderUsers(users);
+  }
+
+  async function loadPosts(category='') {
+    const res = await fetch('/api/posts' + (category ? `?category=${category}` : ''));
+    const j = await res.json();
+    if (!j.ok) { document.getElementById('posts-list').innerHTML = '<p class="no-content-message">Failed to load posts</p>'; return; }
+    const posts = j.posts;
+    if (!posts.length) { document.getElementById('posts-list').innerHTML = '<p class="no-content-message">No posts to display</p>'; return; }
+    document.getElementById('posts-list').innerHTML = posts.map(p => `
+      <div class="post-item">
+        <div style="flex:1;">
+          <div style="font-weight:700">
+            ${escapeHtml(p.userId?.name || 'Unknown')}
+            ${p.userId?.role === 'admin' ? `<i class="fas fa-star text-gray-500 text-sm" title="Posted by Admin"></i>` : ''}
+          </div>
+          <div class="text-sm text-gray-600" style="color:var(--subtle-text);">${escapeHtml(p.content || '').slice(0, 200)}...</div>
+          ${p.media?.url ? (p.media.type === 'video' ? `<video src="${p.media.url}" class="post-card-media" controls></video>` : `<img src="${p.media.url}" class="post-card-media" alt="Post media">`) : ''}
+          <div class="text-xs text-gray-400 mt-2" style="color:var(--subtle-text)">${new Date(p.createdAt).toLocaleString()}</div>
+        </div>
+        <div>
+          <button class="btn btn-danger delete-post-admin" data-id="${p._id}">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.delete-post-admin').forEach(b => {
+      b.addEventListener('click', async () => {
+        const id = b.dataset.id;
+        const result = await showConfirmModal('Delete this post?');
+        if (!result) return;
+        const res = await fetch('/api/admin/posts/' + id, { method:'DELETE' });
+        const j = await res.json();
+        if (j.ok) { loadPosts(); showMessageBox('Post deleted', false); }
+        else showMessageBox(j.message || 'Failed to delete post', true);
+      });
+    });
+  }
+
+  document.getElementById('search-users-btn').addEventListener('click', ()=> {
+    const q = document.getElementById('search-users').value.trim();
+    loadUsers(q);
+  });
+  document.getElementById('refresh-users').addEventListener('click', ()=> loadUsers(''));
+
+  document.querySelectorAll('.filter-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      const category = button.dataset.category;
+      loadPosts(category);
+    });
+  });
+
+  document.getElementById('logout').addEventListener('click', async () => {
+    await fetch('/api/auth/logout', { method:'POST' });
+    window.location = '/pages/signin.html';
+  });
+
+  // init
+  (async () => {
+    await fetchMe();
+    await loadUsers('');
+    await loadPosts('');
+  })();
+</script>
+</body>
+</html>
